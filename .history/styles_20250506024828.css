@@ -1,0 +1,282 @@
+/* Basic Styles for the Instagram Clone with Pink Color Scheme */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+.container {
+  width: 90%;
+  margin: 0 auto;
+}
+
+/* Header Styles */
+header {
+  background-color: #e4405f; /* Instagram Pink */
+  color: white;
+  padding: 15px 0;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+header nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+header nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 15px;
+  font-weight: bold;
+}
+
+header nav a:hover {
+  text-decoration: underline;
+}
+
+/* Footer Styles */
+footer {
+  text-align: center;
+  padding: 10px 0;
+  background-color: #e4405f;
+  color: white;
+}
+
+/* Main Feed */
+main {
+  padding: 20px 0;
+}
+
+h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+form {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="tel"],
+form input[type="password"],
+form textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+form input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #e4405f; /* Instagram Pink */
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+form button:hover {
+  background-color: #c13584; /* Darker pink shade */
+}
+
+form button:active {
+  background-color: #9b4d77; /* Even darker pink for active state */
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="password"]:focus,
+form textarea:focus {
+  border-color: #e4405f; /* Focus border with pink */
+}
+
+/* Feed (Home Page) */
+.feed {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+}
+
+.post {
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.post img,
+.post video {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 10px;
+}
+
+.actions span {
+  cursor: pointer;
+  margin-right: 20px;
+  color: #e4405f;
+  font-size: 1.1rem;
+  transition: color 0.3s;
+}
+
+.actions span:hover {
+  color: #c13584;
+}
+
+/* Sign Up and Sign In Forms */
+.sign-up-form,
+.sign-in-form {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.sign-up-form input[type="text"],
+.sign-up-form input[type="email"],
+.sign-up-form input[type="tel"],
+.sign-up-form input[type="password"],
+.sign-up-form input[type="file"],
+.sign-up-form textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.sign-up-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #e4405f; /* Instagram Pink */
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.sign-up-form button:hover {
+  background-color: #c13584; /* Darker pink shade */
+}
+
+.sign-up-form button:active {
+  background-color: #9b4d77; /* Even darker pink for active state */
+}
+
+.sign-up-form input[type="text"]:focus,
+.sign-up-form input[type="email"]:focus,
+.sign-up-form input[type="password"]:focus,
+.sign-up-form textarea:focus {
+  border-color: #e4405f; /* Focus border with pink */
+}
+
+/* Profile Page */
+.profile-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.profile-container img {
+  width: 100%;
+  border-radius: 50%;
+  max-width: 150px;
+  margin: 0 auto;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.profile-container h3 {
+  font-size: 1.8em;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.profile-container p {
+  text-align: center;
+  color: #777;
+}
+
+.profile-container .button {
+  padding: 10px 20px;
+  background-color: #e4405f;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.profile-container .button:hover {
+  background-color: #c13584;
+}
+
+.profile-container .button:active {
+  background-color: #9b4d77;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 1.2em;
+  }
+
+  header nav {
+    flex-direction: column;
+    margin-top: 10px;
+  }
+
+  header nav a {
+    margin: 5px 0;
+  }
+
+  .feed {
+    padding

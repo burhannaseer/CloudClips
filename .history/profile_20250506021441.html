@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instagram Clone - Profile</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Instagram Clone</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="profile.html">Profile</a>
+        <a href="upload.html">Upload</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>My Profile</h2>
+    <p>Username: user123</p>
+    <p>Email: user@example.com</p>
+    <div id="myPosts" class="feed"></div>
+  </main>
+
+  <footer>
+    <div class="container">&copy; 2025 Instagram Clone</div>
+  </footer>
+
+  <script>
+    const myPosts = document.getElementById('myPosts');
+    const posts = JSON.parse(localStorage.getItem('posts')) || [];
+    posts.forEach(post => {
+      const div = document.createElement('div');
+      div.className = 'post';
+      div.innerHTML = `<img src="${post.image}" alt=""><p>${post.description}</p>`;
+      myPosts.appendChild(div);
+    });
+  </script>
+</body>
+</html>

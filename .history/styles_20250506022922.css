@@ -1,0 +1,113 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fafafa;
+  color: #333;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+header, footer {
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+nav a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="file"],
+textarea,
+button {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.feed .post {
+  background: white;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.post img, .post video {
+  width: 100%;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.actions span:hover {
+  opacity: 0.7;
+}
+
+/* Sign In / Sign Up Forms */
+form#signinForm, form#signupForm {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  max-width: 400px;
+  margin: 40px auto;
+}
+
+form#signinForm p,
+form#signupForm p {
+  text-align: center;
+}
+
+form#signinForm a,
+form#signupForm a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+form#signinForm a:hover,
+form#signupForm a:hover {
+  text-decoration: underline;
+}
