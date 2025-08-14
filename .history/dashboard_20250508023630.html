@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h1>User Dashboard</h1>
+
+    <table class="dashboard-table">
+      <thead>
+        <tr>
+          <th>Profile Name</th>
+          <th>Email</th>
+          <th>Sign-In History</th>
+          <th>My Posts</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="dashboardBody">
+        <!-- Dashboard rows will be injected here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div id="edit-profile-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" onclick="cancelEdit()">&times;</span>
+      <h2>Edit Profile</h2>
+      <form id="editProfileForm">
+        <label for="editFirstName">First Name</label>
+        <input type="text" id="editFirstName" required />
+
+        <label for="editLastName">Last Name</label>
+        <input type="text" id="editLastName" required />
+
+        <label for="editPhone">Phone</label>
+        <input type="text" id="editPhone" required />
+
+        <button type="submit">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

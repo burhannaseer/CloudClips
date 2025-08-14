@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CloudClips Clone – Home</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="dashboard.js" defer></script>
+</head>
+<body>
+  <header class="container">
+    <h1>CloudClips Clone</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="profile.html">Profile</a>
+      <a href="upload.html">Upload</a>
+      <a href="signin.html">Sign In</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div id="feed" class="feed"></div>
+  </main>
+
+  <footer class="container">&copy; 2025 CloudClips Clone</footer>
+
+  <script>
+    function renderPosts(containerId, onlyUserPosts = false) {
+      const container = document.getElementById(containerId);
+      const posts = JSON.parse(localStorage.getItem('posts')) || [];
+      const user  = JSON.parse(localStorage.getItem('loggedInUser'));
+
+      const list = onlyUserPosts && user
+        ? posts.filter(p => p.userEmail === user.email)
+        : posts;
+
+      if (!list.length) {
+        container.innerHTML = '<p>No posts to display.</p>';
+        return;
+      }
+
+      container.innerHTML = list.map((p, i) => {
+        // use actual global index so button handlers hit the right post
+        const globalIndex = posts.indexOf(p);
+        return `
+          <div class="post">
+            <h3>${p.title || 'Untitled'}</h3>
+            ${p.type.startsWith('video')
+              ? `<video controls><source src="${p.media}" type="${p.type}"></video>`
+              : `<img src="${p.media}" alt="">`
+            }
+            <p>${p.description}</p>
+            <div class="actions">
+              <button onclick="likePost(${globalIndex})">❤️ ${p.likes}</button>
+              <button onclick="sharePost(${globalIndex})" title="Share">🔗</button>
+              <button onclick="savePost(${globalIndex})" title="Save">💾</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPosts('feed', false);
+    });
+  </script>
+</body>
+</html>

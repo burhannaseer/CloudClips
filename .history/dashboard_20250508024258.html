@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h1>User Dashboard</h1>
+
+    <table class="dashboard-table">
+      <thead>
+        <tr>
+          <th>Profile Name</th>
+          <th>Email</th>
+          <th>Sign-In History</th>
+          <th>My Posts</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="dashboardBody">
+        <!-- Dashboard rows will be injected here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div id="edit-profile-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" onclick="cancelEdit()">&times;</span>
+      <h2>Edit Profile</h2>
+      <form id="editProfileForm">
+        <label for="editFirstName">First Name</label>
+        <input type="text" id="editFirstName" required />
+
+        <label for="editLastName">Last Name</label>
+        <input type="text" id="editLastName" required />
+
+        <label for="editPhone">Phone</label>
+        <input type="text" id="editPhone" required />
+
+        <button type="submit">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Populate table on load
+    document.addEventListener('DOMContentLoaded', function() {
+      const user = JSON.parse(localStorage.getItem('loggedInUser'));
+      const signInHistory = JSON.parse(localStorage.getItem('signInHistory')) || {};
+      const posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+      if (!user) {
+        alert('Please sign in to access the dashboard.');
+        window.location.href = 'signin.html';
+        return;
+      }
+
+      const tr = document.createElement('tr');
+
+      // Profile Name & Email
+      const nameTd = document.createElement('td');
+      nameTd.textContent = `${user.firstName} ${user.lastName}`;
+
+      const emailTd = document.createElement('td');
+      emailTd.textContent = user.email;
+
+      // Sign-In History
+      const historyTd = document.createElement('td');
+      const historyList = signInHistory[user.email] || [];
+      if (historyList.length) {
+        const ul = document.createElement('ul');
+        historyList.forEach(ts => {
+          const li = document.createElement('li');
+          li.textContent = new Date(ts).toLocaleString();
+          ul.appendChild(li);
+        });
+        historyTd.appendChild(ul);
+      } else {
+        historyTd.textContent = '—';
+      }
+
+      // My Posts
+      const postsTd = document.createElement('td');
+      const myPosts = posts.filter(p => p.userEmail === user.email);
+      if (myPosts.length) {
+        const ul2 = document.createElement('ul');
+        myPosts.forEach(p => {
+          const li = document.createElement('li');
+          li.textContent = p.title || 'Untitled';
+          ul2.appendChild(li);
+        });
+        postsTd.appendChild(ul2);
+      } else {
+        postsTd.textContent = '—';
+      }
+
+      // Actions
+      const actionsTd = document.createElement('td');
+      const editBtn = document.createElement('button');
+      editBtn.textContent = 'Edit Profile';
+      editBtn.onclick = showEditForm;
+      actionsTd.appendChild(editBtn);
+
+      tr.append(nameTd, emailTd, historyTd, postsTd, actionsTd);
+      document.getElementById('dashboardBody').appendChild(tr);
+    });
+
+    // Show edit modal
+    function showEditForm() {
+      const user = JSON.parse(localStorage.getItem('loggedInUser'));
+      document.getElementById('editFirstName').value = user.firstName;
+      document.getElementById('editLastName').value  = user.lastName;
+      document.getElementById('editPhone').value     = user.phone || '';
+      document.getElementById('edit-profile-modal').style.display = 'block';
+    }
+
+    function cancelEdit() {
+      document.getElementById('edit-profile-modal').style.display = 'none';
+    }
+
+    // Handle saving edits
+    document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const user = JSON.parse(localStorage.getItem('loggedInUser'));
+      user.firstName = document.getElementById('editFirstName').value.trim();
+      user.lastName  = document.getElementById('editLastName').value.trim();
+      user.phone     = document.getElementById('editPhone').value.trim();
+      localStorage.setItem('loggedInUser', JSON.stringify(user));
+      alert('Profile updated. Refresh to see changes.');
+      cancelEdit();
+    });
+  </script>
+</body>
+</html>

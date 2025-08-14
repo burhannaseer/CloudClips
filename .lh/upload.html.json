@@ -1,0 +1,18 @@
+{
+    "sourceFile": "upload.html",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1755160539245,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1755160539245,
+            "name": "Commit-0",
+            "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>CloudClips</title>\n  <link rel=\"stylesheet\" href=\"styles.css\">\n  <script src=\"global.js\"></script>\n</head>\n<body>\n  <header>\n    <div class=\"container\">\n      <h1>CloudClips </h1>\n      <nav>\n        <a href=\"index.html\">Home</a>\n        <a href=\"profile.html\">Profile</a>\n        <a href=\"upload.html\">Upload</a>\n        <a href=\"signin.html\">Sign In</a>\n      </nav>\n    </div>\n  </header>\n\n  <main class=\"container\">\n    <form id=\"uploadForm\">\n      <input type=\"text\" id=\"titleInput\" placeholder=\"Post Title\" required />\n      <input type=\"file\" id=\"mediaInput\" accept=\"image/*,video/*\" required />\n      <textarea id=\"descriptionInput\" placeholder=\"Write a description...\" required></textarea>\n      <button type=\"submit\">Upload</button>\n    </form>\n  </main>\n\n  <footer>\n    <div class=\"container\">&copy; 2025 CloudClips </div>\n  </footer>\n\n  <script src=\"script.js\"></script>\n</body>\n</html>\n"
+        }
+    ]
+}

@@ -1,13 +1,13 @@
-// Handle Sign Up
+// --- Sign Up ---
 const signupForm = document.getElementById('signupForm');
 if (signupForm) {
-  signupForm.addEventListener('submit', function(e) {
+  signupForm.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const firstName = document.getElementById('firstName').value;
-    const lastName = document.getElementById('lastName').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
 
@@ -21,86 +21,124 @@ if (signupForm) {
       return;
     }
 
-    const user = {
-      firstName,
-      lastName,
-      email,
-      phone,
-      password,
-    };
+    const users = JSON.parse(localStorage.getItem('users')) || [];
 
-    localStorage.setItem('user', JSON.stringify(user));
+    if (users.find(user => user.email === email)) {
+      alert('Email already exists. Please sign in.');
+      return;
+    }
+
+    const user = { firstName, lastName, email, phone, password };
+
+    users.push(user);
+    localStorage.setItem('users', JSON.stringify(users));
+
     alert('Account created successfully!');
     window.location.href = 'signin.html';
   });
 }
 
-// Handle Sign In
+// --- Sign In ---
 const signinForm = document.getElementById('signinForm');
 if (signinForm) {
-  signinForm.addEventListener('submit', function(e) {
+  signinForm.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const email = document.getElementById('emailSignIn').value;
+    const email = document.getElementById('emailSignIn').value.trim();
     const password = document.getElementById('passwordSignIn').value;
 
-    const user = JSON.parse(localStorage.getItem('user'));
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(user => user.email === email && user.password === password);
 
     if (!user) {
-      alert('No account found. Please sign up first.');
+      alert('Incorrect email or password.');
       return;
     }
 
-    if (user.email === email && user.password === password) {
-      alert('Sign In successful!');
-      window.location.href = 'index.html';
-    } else {
-      alert('Incorrect email or password. Please try again.');
+    localStorage.setItem('loggedInUser', JSON.stringify(user));
+
+    const signInHistory = JSON.parse(localStorage.getItem('signInHistory')) || {};
+    if (!signInHistory[user.email]) {
+      signInHistory[user.email] = [];
     }
+    signInHistory[user.email].push(new Date().toISOString());
+    localStorage.setItem('signInHistory', JSON.stringify(signInHistory));
+
+    alert('Sign In successful!');
+    window.location.href = 'index.html';
   });
 }
 
-// Handle Post Upload
+// --- Upload Post ---
 const form = document.getElementById('uploadForm');
 if (form) {
-  form.addEventListener('submit', function(e) {
+  form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const title = document.getElementById('titleInput').value;
+    const title = document.getElementById('titleInput').value.trim();
+    const description = document.getElementById('descriptionInput').value.trim();
     const fileInput = document.getElementById('mediaInput');
-    const description = document.getElementById('descriptionInput').value;
     const file = fileInput.files[0];
+
+    if (!file) {
+      alert('Please select a file.');
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert('File is too large. Max 2MB allowed.');
+      return;
+    }
+
     const reader = new FileReader();
 
-    reader.onload = function() {
+    reader.onload = function () {
       const post = {
         title,
         media: reader.result,
         type: file.type,
         description,
-        likes: 0
+        likes: 0,
+        userEmail: JSON.parse(localStorage.getItem('loggedInUser')).email // Save user email for filtering posts later
       };
 
-      const posts = JSON.parse(localStorage.getItem('posts')) || [];
-      posts.unshift(post);
-      localStorage.setItem('posts', JSON.stringify(posts));
-
-      alert('Post uploaded!');
-      window.location.href = 'index.html';
+      try {
+        const posts = JSON.parse(localStorage.getItem('posts')) || [];
+        posts.unshift(post); // Insert post at the beginning
+        localStorage.setItem('posts', JSON.stringify(posts));
+        alert('Post uploaded!');
+        window.location.href = 'index.html';
+      } catch (err) {
+        alert('Upload failed: ' + err.message);
+      }
     };
 
-    if (file) {
-      reader.readAsDataURL(file);
-    }
+    reader.readAsDataURL(file);
   });
 }
 
-function renderPosts(containerId) {
+// --- Render Posts ---
+function renderPosts(containerId, onlyUserPosts = false) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
   const posts = JSON.parse(localStorage.getItem('posts')) || [];
-  posts.forEach((post, index) => {
+  const user = JSON.parse(localStorage.getItem('loggedInUser'));
+
+  // Filter posts if onlyUserPosts is true, otherwise show all posts
+  const filteredPosts = onlyUserPosts && user
+    ? posts.filter(post => post.userEmail === user.email)
+    : posts;
+
+  // If no posts available, show a message
+  if (filteredPosts.length === 0) {
+    container.innerHTML = '<p>No posts to display</p>';
+    return;
+  }
+
+  container.innerHTML = ''; // Clear previous content before rendering new posts
+
+  filteredPosts.forEach((post, index) => {
     const div = document.createElement('div');
     div.className = 'post';
 
@@ -122,6 +160,12 @@ function renderPosts(containerId) {
   });
 }
 
+// --- Home Page: Display All Posts ---
+if (document.getElementById('feed')) {
+  renderPosts('feed', false); // Display all posts on the home page
+}
+
+// --- Like Post ---
 function likePost(index) {
   const posts = JSON.parse(localStorage.getItem('posts')) || [];
   posts[index].likes++;
@@ -129,4 +173,128 @@ function likePost(index) {
   location.reload();
 }
 
-renderPosts('feed');
+// --- Display Username & Email on Profile ---
+const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+if (loggedInUser) {
+  const usernameEl = document.getElementById('usernameDisplay');
+  const emailEl = document.getElementById('emailDisplay');
+  if (usernameEl) usernameEl.textContent = `${loggedInUser.firstName} ${loggedInUser.lastName}`;
+  if (emailEl) emailEl.textContent = loggedInUser.email;
+}
+
+// --- Display Sign-In History ---
+function displaySignInHistory() {
+  const user = JSON.parse(localStorage.getItem('loggedInUser'));
+  if (!user) return;
+
+  const signInHistory = JSON.parse(localStorage.getItem('signInHistory')) || {};
+  const historyContainer = document.getElementById('signInHistory');
+  
+  if (signInHistory[user.email]) {
+    signInHistory[user.email].forEach(signInTime => {
+      const div = document.createElement('div');
+      div.className = 'history-entry';
+      div.textContent = `Signed in at: ${new Date(signInTime).toLocaleString()}`;
+      historyContainer.appendChild(div);
+    });
+  } else {
+    historyContainer.innerHTML = '<p>No sign-in history found.</p>';
+  }
+}
+
+// --- Dashboard ---
+function renderDashboard() {
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+  if (loggedInUser) {
+    document.getElementById('profileName').textContent = `${loggedInUser.firstName} ${loggedInUser.lastName}`;
+    document.getElementById('profileEmail').textContent = loggedInUser.email;
+    displaySignInHistory();
+    renderPosts('myPosts', true); // Render only the logged-in user's posts
+  } else {
+    alert('Please sign in to access the dashboard.');
+    window.location.href = 'signin.html';
+  }
+}
+
+// Call renderDashboard when the dashboard page loads
+if (document.getElementById('dashboardPage')) {
+  renderDashboard();
+}
+
+// --- Home Page: Display All Posts ---
+if (document.getElementById('homePage')) {
+  renderPosts('homePosts', false); // Display all posts on the home page
+}
+
+
+// ========== CloudClips UX Enhancements ==========
+
+// Smooth scroll for internal anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    const href = a.getAttribute('href');
+    if (href && href.length > 1) {
+      e.preventDefault();
+      const el = document.querySelector(href);
+      if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  });
+});
+
+// Scroll reveal effect
+const revealEls = document.querySelectorAll('.reveal');
+const onScrollReveal = () => {
+  const vh = window.innerHeight;
+  revealEls.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < vh * 0.9) el.classList.add('show');
+  });
+};
+window.addEventListener('scroll', onScrollReveal, {passive:true});
+window.addEventListener('load', onScrollReveal);
+
+// Button ripple effect
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('.btn, button');
+  if(!btn) return;
+  const circle = document.createElement('span');
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  circle.style.width = circle.style.height = `${size}px`;
+  circle.style.position = 'absolute';
+  circle.style.borderRadius = '50%';
+  circle.style.left = `${e.clientX - rect.left - size/2}px`;
+  circle.style.top = `${e.clientY - rect.top - size/2}px`;
+  circle.style.background = 'rgba(255,255,255,.25)';
+  circle.style.pointerEvents = 'none';
+  circle.style.transform = 'scale(0)';
+  circle.style.opacity = '1';
+  circle.style.transition = 'transform .45s ease, opacity .6s ease';
+  circle.className = 'ripple';
+  btn.style.position = 'relative';
+  btn.style.overflow = 'hidden';
+  btn.appendChild(circle);
+  requestAnimationFrame(()=>{
+    circle.style.transform = 'scale(2.4)';
+    circle.style.opacity = '0';
+  });
+  setTimeout(()=> circle.remove(), 600);
+});
+
+// Theme toggle (dark/light)
+(function(){
+  const toggle = document.querySelector('.theme-toggle');
+  const apply = (mode) => {
+    document.body.classList.toggle('light', mode === 'light');
+    localStorage.setItem('cc-theme', mode);
+  };
+  const saved = localStorage.getItem('cc-theme');
+  if(saved) apply(saved);
+  if(toggle){
+    toggle.addEventListener('click', ()=>{
+      const next = document.body.classList.contains('light') ? 'dark' : 'light';
+      apply(next);
+    });
+  }
+})();
+

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>All Users Dashboard</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="dashboard-container">
+    <h1>All Users Dashboard</h1>
+
+    <table class="dashboard-table">
+      <thead>
+        <tr>
+          <th>Profile Name</th>
+          <th>Email</th>
+          <th>Sign-In History</th>
+          <th>Posts</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="dashboardBody">
+        <!-- Users will be populated here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="edit-profile-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" onclick="cancelEdit()">&times;</span>
+      <h2>Edit Profile</h2>
+      <form id="editProfileForm">
+        <label for="editFirstName">First Name</label>
+        <input type="text" id="editFirstName" required />
+
+        <label for="editLastName">Last Name</label>
+        <input type="text" id="editLastName" required />
+
+        <label for="editPhone">Phone</label>
+        <input type="text" id="editPhone" required />
+
+        <button type="submit">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const signInHistory = JSON.parse(localStorage.getItem('signInHistory')) || {};
+    const posts = JSON.parse(localStorage.getItem('posts')) || [];
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+
+    const dashboardBody = document.getElementById('dashboardBody');
+
+    users.forEach(user => {
+      const tr = document.createElement('tr');
+
+      // Name & Email
+      const nameTd = document.createElement('td');
+      nameTd.textContent = `${user.firstName} ${user.lastName}`;
+      const emailTd = document.createElement('td');
+      emailTd.textContent = user.email;
+
+      // Sign-in History
+      const historyTd = document.createElement('td');
+      const history = signInHistory[user.email] || [];
+      if (history.length) {
+        const ul = document.createElement('ul');
+        history.forEach(entry => {
+          const li = document.createElement('li');
+          li.textContent = new Date(entry).toLocaleString();
+          ul.appendChild(li);
+        });
+        historyTd.appendChild(ul);
+      } else {
+        historyTd.textContent = '—';
+      }
+
+      // Posts
+      const postsTd = document.createElement('td');
+      const userPosts = posts.filter(post => post.userEmail === user.email);
+      if (userPosts.length) {
+        const ul = document.createElement('ul');
+        userPosts.forEach(post => {
+          const li = document.createElement('li');
+          li.textContent = post.title || 'Untitled';
+          ul.appendChild(li);
+        });
+        postsTd.appendChild(ul);
+      } else {
+        postsTd.textContent = '—';
+      }
+
+      // Actions
+      const actionsTd = document.createElement('td');
+      if (loggedInUser && loggedInUser.email === user.email) {
+        const btn = document.createElement('button');
+        btn.textContent = 'Edit';
+        btn.onclick = showEditForm;
+        actionsTd.appendChild(btn);
+      } else {
+        actionsTd.textContent = '—';
+      }
+
+      tr.append(nameTd, emailTd, historyTd, postsTd, actionsTd);
+      dashboardBody.appendChild(tr);
+    });
+
+    function showEditForm() {
+      const user = JSON.parse(localStorage.getItem('loggedInUser'));
+      document.getElementById('editFirstName').value = user.firstName;
+      document.getElementById('editLastName').value = user.lastName;
+      document.getElementById('editPhone').value = user.phone || '';
+      document.getElementById('edit-profile-modal').style.display = 'block';
+    }
+
+    function cancelEdit() {
+      document.getElementById('edit-profile-modal').style.display = 'none';
+    }
+
+    document.getElementById('editProfileForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const updatedFirstName = document.getElementById('editFirstName').value.trim();
+      const updatedLastName = document.getElementById('editLastName').value.trim();
+      const updatedPhone = document.getElementById('editPhone').value.trim();
+
+      const updatedUsers = users.map(u => {
+        if (u.email === loggedInUser.email) {
+          return { ...u, firstName: updatedFirstName, lastName: updatedLastName, phone: updatedPhone };
+        }
+        return u;
+      });
+
+      const updatedLoggedIn = {
+        ...loggedInUser,
+        firstName: updatedFirstName,
+        lastName: updatedLastName,
+        phone: updatedPhone
+      };
+
+      localStorage.setItem('users', JSON.stringify(updatedUsers));
+      localStorage.setItem('loggedInUser', JSON.stringify(updatedLoggedIn));
+      alert('Profile updated. Please refresh.');
+      cancelEdit();
+    });
+  </script>
+</body>
+</html>

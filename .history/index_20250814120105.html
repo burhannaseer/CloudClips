@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>CloudClips</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<header class="navbar">
+  <div class="container navbar-inner">
+    <a class="brand" href="./">
+      <span class="brand-badge">CC</span>
+      CloudClips
+    </a>
+    <div class="nav-actions">
+      <button class="theme-toggle btn btn-outline btn-pill" type="button">Toggle Theme</button>
+      <a class="btn btn-primary btn-pill" href="upload.html">Upload</a>
+    </div>
+  </div>
+</header>
+<section class="reveal" class="hero container reveal">
+  <h1>Share moments. Inspire more — with <strong>CloudClips</strong>.</h1>
+  <p>Fast uploads, smooth playback, and a sleek new look. Explore trending clips or create your own.</p>
+  <div class="mt-4">
+    <a class="btn btn-primary btn-pill" href="signup.html">Get Started</a>
+    <a class="btn btn-outline btn-pill" href="signin.html">Sign in</a>
+  </div>
+</section>
+
+  <header class="container">
+    <h1>CloudClips Clone</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="profile.html">Profile</a>
+      <a href="upload.html">Upload</a>
+      <a href="signin.html">Sign In</a>
+      
+    </nav>
+  </header>
+
+  <main class="container">
+    <div id="feed" class="feed"></div>
+  </main>
+
+  <footer class="container">&copy; 2025 CloudClips Clone</footer>
+
+  <script>
+    // Render all posts (same JS as before, but with action buttons wired in)
+    function renderPosts(containerId, onlyUserPosts = false) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const posts = JSON.parse(localStorage.getItem('posts')) || [];
+      const user = JSON.parse(localStorage.getItem('loggedInUser'));
+      const filtered = onlyUserPosts && user
+        ? posts.filter(p => p.userEmail === user.email)
+        : posts;
+
+      container.innerHTML = filtered.length
+        ? filtered.map((p,i) => `
+          <div class="post">
+            <h3>${p.title || 'Untitled'}</h3>
+            ${p.type.startsWith('video')
+              ? `<video controls><source src="${p.media}" type="${p.type}"></video>`
+              : `<img src="${p.media}" alt="">`
+            }
+            <p>${p.description}</p>
+            <div class="actions">
+              <button onclick="likePost(${i})">❤️ ${p.likes}</button>
+              <button onclick="sharePost(${i})" title="Share">🔗</button>
+              <button onclick="savePost(${i})" title="Save">💾</button>
+            </div>
+          </div>
+        `).join('')
+        : '<p>No posts to display.</p>';
+    }
+
+    // Wire up home page
+    document.addEventListener('DOMContentLoaded', () => renderPosts('feed', false));
+
+    // Existing functions: likePost, sharePost, savePost (implemented in your JS file)
+  </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>CloudClips Clone – Profile</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <header class="container">
+    <h1>My Profile</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="profile.html">Profile</a>
+      <a href="upload.html">Upload</a>
+      <a href="signin.html">Sign In</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="userInfo">
+      <h2 id="usernameDisplay"></h2>
+      <p id="emailDisplay"></p>
+    </section>
+    <section class="feed" id="myPosts"></section>
+  </main>
+
+  <footer class="container">&copy; 2025 CloudClips Clone</footer>
+
+  <script>
+    // Display signed-in user info
+    const user = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (!user) location.href = 'signin.html';
+    document.getElementById('usernameDisplay').textContent = user.firstName + ' ' + user.lastName;
+    document.getElementById('emailDisplay').textContent = user.email;
+
+    // Render only this user’s posts
+    document.addEventListener('DOMContentLoaded', () => renderPosts('myPosts', true));
+
+    // Reuse renderPosts from above (with actions)
+    function renderPosts(containerId, onlyUserPosts = false) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const posts = JSON.parse(localStorage.getItem('posts')) || [];
+      const filtered = onlyUserPosts
+        ? posts.filter(p => p.userEmail === user.email)
+        : posts;
+
+      container.innerHTML = filtered.length
+        ? filtered.map((p,i) => `
+          <div class="post">
+            <h3>${p.title || 'Untitled'}</h3>
+            ${p.type.startsWith('video')
+              ? `<video controls><source src="${p.media}" type="${p.type}"></video>`
+              : `<img src="${p.media}" alt="">`
+            }
+            <p>${p.description}</p>
+            <div class="actions">
+              <button onclick="likePost(${i})">❤️ ${p.likes}</button>
+              <button onclick="sharePost(${i})" title="Share">🔗</button>
+              <button onclick="savePost(${i})" title="Save">💾</button>
+            </div>
+          </div>
+        `).join('')
+        : '<p>No posts yet.</p>';
+    }
+
+    // Ensure your likePost, sharePost, savePost functions exist in this script or are imported.
+  </script>
+</body>
+</html>

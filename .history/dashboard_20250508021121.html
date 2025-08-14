@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>User Dashboard</title>
+</head>
+<body>
+  <h1>User Dashboard</h1>
+  
+  <div id="profile-info">
+    <h2>Profile Information</h2>
+    <p id="usernameDisplay"></p>
+    <p id="emailDisplay"></p>
+    <button onclick="showEditForm()">Edit Profile</button>
+  </div>
+
+  <div id="edit-profile" style="display: none;">
+    <h2>Edit Profile</h2>
+    <form id="editProfileForm">
+      <label for="editFirstName">First Name: </label><input type="text" id="editFirstName"><br>
+      <label for="editLastName">Last Name: </label><input type="text" id="editLastName"><br>
+      <label for="editPhone">Phone: </label><input type="text" id="editPhone"><br>
+      <button type="submit">Save</button>
+      <button type="button" onclick="cancelEdit()">Cancel</button>
+    </form>
+  </div>
+
+  <div id="signInHistory">
+    <h3>Sign In History</h3>
+    <!-- Sign-in history will be rendered here -->
+  </div>
+
+  <div id="myPosts">
+    <h3>My Posts</h3>
+    <!-- User's posts will be rendered here -->
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
